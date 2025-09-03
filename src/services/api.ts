@@ -22,10 +22,10 @@ class ArbitrageApiService {
   private wsConnection: WebSocket | null = null;
 
   constructor() {
-    // CAMBIAR POR TUS URLs REALES DE ARBITRAGEX SUPREME
+    // Backend ArbitrageX Supreme URLs
     const baseURL = process.env.NODE_ENV === 'production' 
-      ? 'https://api.arbitragexsupreme.com/api/v2'  // ← TU DOMINIO REAL
-      : 'http://localhost:3000/api/v2';  // ← Cuando corres local
+      ? 'https://api.arbitragexsupreme.com/api/v2'  // Tu dominio real cuando lo despliegues
+      : 'https://3000-iy6h7uefq9p08klkqc2yh-6532622b.e2b.dev/api/v2';  // Tu sandbox actual
 
     this.api = axios.create({
       baseURL,
@@ -176,8 +176,8 @@ class ArbitrageApiService {
   // WebSocket Connection
   connectWebSocket(): void {
     const wsUrl = process.env.NODE_ENV === 'production'
-      ? 'wss://TU_DOMINIO_PRODUCCION.com/ws'  // ← CAMBIAR AQUÍ
-      : 'ws://localhost:3000/ws';  // ← Tu WebSocket local
+      ? 'wss://api.arbitragexsupreme.com/ws'  // Tu WebSocket real
+      : 'wss://3000-iy6h7uefq9p08klkqc2yh-6532622b.e2b.dev/ws';  // Tu WebSocket sandbox
 
     this.wsConnection = new WebSocket(wsUrl);
 
