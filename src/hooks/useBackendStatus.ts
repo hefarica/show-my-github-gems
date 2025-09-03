@@ -16,7 +16,7 @@ export const useBackendStatus = () => {
     isUsingRealData: false,
     status: 'disconnected',
     lastChecked: new Date(),
-    endpoint: 'https://8001c524.arbitragex-supreme-backend.pages.dev'
+    endpoint: 'https://arbitragex-supreme-backend.pages.dev'
   });
 
   const checkBackendStatus = async () => {
@@ -28,9 +28,9 @@ export const useBackendStatus = () => {
       const data = await arbitrageApi.getDashboardSummary();
       const responseTime = Date.now() - startTime;
       
-      // Verificar si los datos son reales basándose en la fuente
-      // Si contiene datos de CoinGecko = datos reales
-      const isRealData = data.total_profit_24h > 0 && data.active_opportunities > 0 && data.portfolio_value > 1000;
+      // Verificar si los datos son reales del backend
+      // Datos reales del backend tienen estructura específica
+      const isRealData = data.active_opportunities > 0 && data.total_profit_24h > 0;
 
       console.log(`✅ Datos ${isRealData ? 'REALES' : 'MOCK'} detectados`);
 
@@ -39,7 +39,7 @@ export const useBackendStatus = () => {
         isUsingRealData: isRealData,
         status: 'connected',
         lastChecked: new Date(),
-        endpoint: 'https://8001c524.arbitragex-supreme-backend.pages.dev'
+        endpoint: 'https://arbitragex-supreme-backend.pages.dev'
       });
 
       console.log(`✅ Backend status: ${isRealData ? 'REAL DATA' : 'MOCK DATA'} (${responseTime}ms)`);
@@ -50,7 +50,7 @@ export const useBackendStatus = () => {
         isUsingRealData: false,
         status: 'disconnected',
         lastChecked: new Date(),
-        endpoint: 'https://8001c524.arbitragex-supreme-backend.pages.dev'
+        endpoint: 'https://arbitragex-supreme-backend.pages.dev'
       });
 
       console.log('❌ Backend disconnected, using mock data');
