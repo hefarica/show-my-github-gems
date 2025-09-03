@@ -26,8 +26,8 @@ class ArbitrageApiService {
     // Frontend: https://github.com/hefarica/show-my-github-gems.git
     // Backend: https://github.com/hefarica/ARBITRAGEXSUPREME.git
     const baseURL = process.env.NODE_ENV === 'production' 
-      ? 'https://api.arbitragexsupreme.com/api/v2'  // Tu backend ARBITRAGEXSUPREME en producción
-      : 'http://localhost:3000/api/v2';  // Backend local para desarrollo
+      ? 'https://3000-iy6h7uefq9p08klkqc2yh-6532622b.e2b.dev/api/v2'  // Tu backend ARBITRAGEXSUPREME en E2B
+      : 'https://3000-iy6h7uefq9p08klkqc2yh-6532622b.e2b.dev/api/v2';  // Mismo backend para desarrollo
 
     this.api = axios.create({
       baseURL,
