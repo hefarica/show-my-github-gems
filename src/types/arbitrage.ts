@@ -231,6 +231,9 @@ export interface OpportunityFilters {
   types?: string[];
   exchanges?: string[];
   assets?: string[];
+  limit?: number;
+  sort_by?: string;
+  sort_order?: 'asc' | 'desc';
 }
 
 export interface ExecutionFilters {

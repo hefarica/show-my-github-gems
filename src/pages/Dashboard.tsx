@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/hooks/use-toast";
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -20,77 +21,20 @@ import {
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, BarChart, Bar } from "recharts";
 import { DashboardSummary, ArbitrageOpportunity, ArbitrageExecution } from "@/types/arbitrage";
+import { arbitrageApi } from "@/services/api";
 
-// Mock data for demonstration - Replace with real API calls
-const mockDashboardData: DashboardSummary = {
-  active_opportunities: 47,
-  total_profit_24h: 15420.32,
-  total_executions_24h: 23,
-  success_rate_24h: 91.3,
-  portfolio_value: 125000.00,
-  portfolio_change_24h: 2.45,
-  top_performing_chains: [
-    { chain: "Ethereum", profit_24h: 5420.12, executions_24h: 8, success_rate: 87.5, avg_gas_cost: 45.32 },
-    { chain: "Arbitrum", profit_24h: 4200.45, executions_24h: 7, success_rate: 100, avg_gas_cost: 2.15 },
-    { chain: "Polygon", profit_24h: 3800.75, executions_24h: 5, success_rate: 80, avg_gas_cost: 0.05 },
-    { chain: "BSC", profit_24h: 2000.00, executions_24h: 3, success_rate: 100, avg_gas_cost: 0.20 }
-  ],
+// Real-time data with loading states
+const initialDashboardData: DashboardSummary = {
+  active_opportunities: 0,
+  total_profit_24h: 0,
+  total_executions_24h: 0,
+  success_rate_24h: 0,
+  portfolio_value: 0,
+  portfolio_change_24h: 0,
+  top_performing_chains: [],
   recent_executions: [],
-  alerts_count: 3
+  alerts_count: 0
 };
-
-const mockOpportunities: ArbitrageOpportunity[] = [
-  {
-    id: "1",
-    type: "cross_chain",
-    profit_percentage: 2.45,
-    profit_usd: 489.50,
-    gas_cost_usd: 42.30,
-    net_profit_usd: 447.20,
-    asset_pair: "ETH/USDC",
-    source_chain: { id: "1", name: "Ethereum", chain_id: 1 } as any,
-    target_chain: { id: "42161", name: "Arbitrum", chain_id: 42161 } as any,
-    source_exchange: "Uniswap V3",
-    target_exchange: "SushiSwap",
-    source_price: 2350.45,
-    target_price: 2408.12,
-    price_difference: 57.67,
-    slippage_tolerance: 0.5,
-    max_amount_usd: 20000,
-    min_profit_threshold: 1.0,
-    execution_time_estimate: 45,
-    risk_score: 3,
-    confidence_level: 0.92,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    status: "active",
-    metadata: {}
-  },
-  {
-    id: "2", 
-    type: "triangular",
-    profit_percentage: 1.87,
-    profit_usd: 372.40,
-    gas_cost_usd: 15.60,
-    net_profit_usd: 356.80,
-    asset_pair: "BTC/ETH/USDC",
-    source_chain: { id: "137", name: "Polygon", chain_id: 137 } as any,
-    source_exchange: "QuickSwap",
-    source_price: 0.0,
-    target_price: 0.0,
-    price_difference: 0.0,
-    slippage_tolerance: 0.3,
-    max_amount_usd: 15000,
-    min_profit_threshold: 1.0,
-    execution_time_estimate: 30,
-    risk_score: 2,
-    confidence_level: 0.88,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    status: "active",
-    metadata: {}
-  }
-];
 
 const profitData = [
   { time: "00:00", profit: 1200 },
@@ -111,8 +55,92 @@ const chainData = [
 ];
 
 export default function Dashboard() {
-  const [dashboardData, setDashboardData] = useState<DashboardSummary>(mockDashboardData);
-  const [opportunities, setOpportunities] = useState<ArbitrageOpportunity[]>(mockOpportunities);
+  const [dashboardData, setDashboardData] = useState<DashboardSummary>(initialDashboardData);
+  const [opportunities, setOpportunities] = useState<ArbitrageOpportunity[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  // Load dashboard data from API
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      try {
+        setLoading(true);
+        const [summary, opportunitiesList] = await Promise.all([
+          arbitrageApi.getDashboardSummary(),
+          arbitrageApi.getOpportunities({ limit: 10, sort_by: 'profit_percentage', sort_order: 'desc' })
+        ]);
+        
+        setDashboardData(summary);
+        setOpportunities(opportunitiesList);
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load dashboard data. Using demo data.",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDashboardData();
+
+    // Connect to WebSocket for real-time updates
+    arbitrageApi.connectWebSocket();
+
+    // Listen for real-time updates
+    const handleOpportunityUpdate = (event: CustomEvent) => {
+      setOpportunities(prev => {
+        const newOpp = event.detail;
+        const existing = prev.findIndex(opp => opp.id === newOpp.id);
+        if (existing >= 0) {
+          const updated = [...prev];
+          updated[existing] = newOpp;
+          return updated;
+        }
+        return [newOpp, ...prev.slice(0, 9)];
+      });
+    };
+
+    const handlePortfolioUpdate = (event: CustomEvent) => {
+      setDashboardData(prev => ({
+        ...prev,
+        ...event.detail
+      }));
+    };
+
+    window.addEventListener('arbitrage:opportunity', handleOpportunityUpdate as EventListener);
+    window.addEventListener('arbitrage:portfolio_update', handlePortfolioUpdate as EventListener);
+
+    return () => {
+      arbitrageApi.disconnectWebSocket();
+      window.removeEventListener('arbitrage:opportunity', handleOpportunityUpdate as EventListener);
+      window.removeEventListener('arbitrage:portfolio_update', handlePortfolioUpdate as EventListener);
+    };
+  }, [toast]);
+
+  // Execute opportunity
+  const handleExecuteOpportunity = async (opportunityId: string, amount: number = 1000) => {
+    try {
+      const execution = await arbitrageApi.executeOpportunity(opportunityId, amount);
+      toast({
+        title: "Execution Started",
+        description: `Arbitrage execution initiated with ID: ${execution.id}`,
+      });
+      
+      // Refresh opportunities after execution
+      const updatedOpportunities = await arbitrageApi.getOpportunities({ limit: 10, sort_by: 'profit_percentage', sort_order: 'desc' });
+      setOpportunities(updatedOpportunities);
+    } catch (error) {
+      console.error('Error executing opportunity:', error);
+      toast({
+        title: "Execution Failed",
+        description: "Failed to execute arbitrage opportunity. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -145,8 +173,10 @@ export default function Dashboard() {
           <p className="text-muted-foreground">Real-time arbitrage opportunities across 5 blockchains</p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-profit animate-pulse"></div>
-          <span className="text-sm text-muted-foreground">Live Feed Active</span>
+          <div className={`w-3 h-3 rounded-full ${loading ? 'bg-warning animate-pulse' : 'bg-profit animate-pulse'}`}></div>
+          <span className="text-sm text-muted-foreground">
+            {loading ? 'Connecting...' : 'Live Feed Active'}
+          </span>
         </div>
       </div>
 
@@ -332,7 +362,12 @@ export default function Dashboard() {
                     <Badge variant={opportunity.risk_score <= 2 ? "default" : opportunity.risk_score <= 4 ? "secondary" : "destructive"}>
                       Risk: {opportunity.risk_score}/5
                     </Badge>
-                    <Button size="sm" className="bg-profit hover:bg-profit/90">
+                    <Button 
+                      size="sm" 
+                      className="bg-profit hover:bg-profit/90"
+                      onClick={() => handleExecuteOpportunity(opportunity.id)}
+                      disabled={loading}
+                    >
                       <Zap className="h-3 w-3 mr-1" />
                       Execute
                     </Button>
