@@ -175,14 +175,19 @@ class ArbitrageApiService {
 
   // WebSocket Connection
   connectWebSocket(): void {
+    // ⚠️ BACKEND NO DISPONIBLE - WebSocket deshabilitado temporalmente
+    console.log('WebSocket conectará cuando el backend esté disponible');
+    
+    // Descomentar cuando el backend esté corriendo:
+    /*
     const wsUrl = process.env.NODE_ENV === 'production'
-      ? 'wss://api.arbitragexsupreme.com/ws'  // Tu WebSocket real
-      : 'wss://3000-iy6h7uefq9p08klkqc2yh-6532622b.e2b.dev/ws';  // Tu WebSocket sandbox
+      ? 'wss://api.arbitragexsupreme.com/ws'
+      : 'wss://3000-iy6h7uefq9p08klkqc2yh-6532622b.e2b.dev/ws';
 
     this.wsConnection = new WebSocket(wsUrl);
 
     this.wsConnection.onopen = () => {
-      console.log('WebSocket connected to ArbitrageX Supreme');
+      console.log('✅ WebSocket connected to ArbitrageX Supreme');
     };
 
     this.wsConnection.onmessage = (event) => {
@@ -192,13 +197,13 @@ class ArbitrageApiService {
 
     this.wsConnection.onclose = () => {
       console.log('WebSocket disconnected');
-      // Attempt to reconnect after 5 seconds
       setTimeout(() => this.connectWebSocket(), 5000);
     };
 
     this.wsConnection.onerror = (error) => {
       console.error('WebSocket error:', error);
     };
+    */
   }
 
   disconnectWebSocket(): void {
