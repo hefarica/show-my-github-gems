@@ -61,7 +61,35 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Arbitrage specific colors
+				profit: {
+					DEFAULT: 'hsl(var(--profit))',
+					foreground: 'hsl(var(--profit-foreground))'
+				},
+				loss: {
+					DEFAULT: 'hsl(var(--loss))',
+					foreground: 'hsl(var(--loss-foreground))'
+				},
+				warning: {
+					DEFAULT: 'hsl(var(--warning))',
+					foreground: 'hsl(var(--warning-foreground))'
+				},
+				info: {
+					DEFAULT: 'hsl(var(--info))',
+					foreground: 'hsl(var(--info-foreground))'
+				},
+				// Trading status colors
+				executing: 'hsl(var(--executing))',
+				pending: 'hsl(var(--pending))',
+				completed: 'hsl(var(--completed))',
+				failed: 'hsl(var(--failed))',
+				// Chain specific colors
+				ethereum: 'hsl(var(--ethereum))',
+				bsc: 'hsl(var(--bsc))',
+				polygon: 'hsl(var(--polygon))',
+				arbitrum: 'hsl(var(--arbitrum))',
+				optimism: 'hsl(var(--optimism))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
