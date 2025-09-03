@@ -22,10 +22,10 @@ class ArbitrageApiService {
   private wsConnection: WebSocket | null = null;
 
   constructor() {
-    // CAMBIAR ESTAS URLs POR TU BACKEND REAL
+    // CAMBIAR POR TUS URLs REALES DE ARBITRAGEX SUPREME
     const baseURL = process.env.NODE_ENV === 'production' 
-      ? 'https://TU_DOMINIO_PRODUCCION.com/api/v2'  // ← CAMBIAR AQUÍ
-      : 'http://localhost:3000/api/v2';  // ← Tu backend local
+      ? 'https://api.arbitragexsupreme.com/api/v2'  // ← TU DOMINIO REAL
+      : 'http://localhost:3000/api/v2';  // ← Cuando corres local
 
     this.api = axios.create({
       baseURL,
