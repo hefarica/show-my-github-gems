@@ -18,8 +18,6 @@ import {
   ArrowDownRight,
   Wallet
 } from "lucide-react";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, BarChart, Bar } from "recharts";
 import { DashboardSummary, ArbitrageOpportunity, ArbitrageExecution } from "@/types/arbitrage";
 import { arbitrageApi } from "@/services/api";
 
@@ -36,23 +34,6 @@ const initialDashboardData: DashboardSummary = {
   alerts_count: 0
 };
 
-const profitData = [
-  { time: "00:00", profit: 1200 },
-  { time: "04:00", profit: 2100 },
-  { time: "08:00", profit: 3200 },
-  { time: "12:00", profit: 4800 },
-  { time: "16:00", profit: 6200 },
-  { time: "20:00", profit: 7400 },
-  { time: "24:00", profit: 8600 }
-];
-
-const chainData = [
-  { name: "Ethereum", value: 35, profit: 5420 },
-  { name: "Arbitrum", value: 25, profit: 4200 },
-  { name: "Polygon", value: 20, profit: 3800 },
-  { name: "BSC", value: 15, profit: 2000 },
-  { name: "Optimism", value: 5, profit: 1000 }
-];
 
 export default function Dashboard() {
   const [dashboardData, setDashboardData] = useState<DashboardSummary>(initialDashboardData);
@@ -234,73 +215,6 @@ export default function Dashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{dashboardData.success_rate_24h}%</div>
             <Progress value={dashboardData.success_rate_24h} className="mt-2" />
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Charts and Opportunities */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Profit Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle>24h Profit Trend</CardTitle>
-            <CardDescription>Cumulative profit over the last 24 hours</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer
-              config={{
-                profit: {
-                  label: "Profit",
-                  color: "hsl(var(--profit))",
-                },
-              }}
-              className="h-[300px]"
-            >
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={profitData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="time" stroke="hsl(var(--muted-foreground))" />
-                  <YAxis stroke="hsl(var(--muted-foreground))" />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Area
-                    type="monotone"
-                    dataKey="profit"
-                    stroke="hsl(var(--profit))"
-                    fill="hsl(var(--profit))"
-                    fillOpacity={0.2}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-
-        {/* Chain Performance */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Chain Performance</CardTitle>
-            <CardDescription>Profit distribution by blockchain</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer
-              config={{
-                profit: {
-                  label: "Profit",
-                  color: "hsl(var(--primary))",
-                },
-              }}
-              className="h-[300px]"
-            >
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chainData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" />
-                  <YAxis stroke="hsl(var(--muted-foreground))" />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="profit" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </ChartContainer>
           </CardContent>
         </Card>
       </div>
