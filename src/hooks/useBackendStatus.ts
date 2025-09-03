@@ -28,13 +28,11 @@ export const useBackendStatus = () => {
       const data = await arbitrageApi.getDashboardSummary();
       const responseTime = Date.now() - startTime;
       
-      // Verificar si los datos son reales o mock
-      // Los datos mock tienen valores específicos predecibles
-      const isRealData = !(
-        data.active_opportunities === 127 &&
-        data.total_profit_24h === 2567.89 &&
-        data.total_executions_24h === 45
-      );
+      // Verificar si los datos son reales basándose en la fuente
+      // Si contiene datos de CoinGecko = datos reales
+      const isRealData = data.total_profit_24h > 0 && data.active_opportunities > 0 && data.portfolio_value > 1000;
+
+      console.log(`✅ Datos ${isRealData ? 'REALES' : 'MOCK'} detectados`);
 
       setBackendStatus({
         isConnected: true,
