@@ -22,10 +22,12 @@ class ArbitrageApiService {
   private wsConnection: WebSocket | null = null;
 
   constructor() {
-    // URLs del Backend ArbitrageX Supreme - Configuración para GitHub
+    // 🔗 Configuración para GitHub Repository: hefarica/show-my-github-gems
+    // Frontend: https://github.com/hefarica/show-my-github-gems.git
+    // Backend: https://github.com/hefarica/ARBITRAGEXSUPREME.git
     const baseURL = process.env.NODE_ENV === 'production' 
-      ? 'https://api.arbitragexsupreme.com/api/v2'  // Tu dominio en producción
-      : 'https://github.com/hefarica/ARBITRAGEXSUPREME'  // Tu backend actual desde GitHub
+      ? 'https://api.arbitragexsupreme.com/api/v2'  // Tu backend ARBITRAGEXSUPREME en producción
+      : 'http://localhost:3000/api/v2';  // Backend local para desarrollo
 
     this.api = axios.create({
       baseURL,
