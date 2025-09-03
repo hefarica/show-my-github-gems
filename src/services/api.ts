@@ -114,32 +114,29 @@ class ArbitrageApiService {
       const response = await this.api.get('/api/v2/dashboard/summary');
       const data = response.data;
       
+      console.log('✅ DATOS REALES recibidos del backend oficial');
+      
       // Transformar datos del backend real al formato esperado
       return {
-        active_opportunities: data.active_opportunities || data.summary?.totalArbitrageOpportunities || 127,
-        total_profit_24h: data.total_profit_24h || data.summary?.total_profit || 2567.89,
-        total_executions_24h: data.total_executions_24h || 45,
+        active_opportunities: data.active_opportunities || data.summary?.totalArbitrageOpportunities || 0,
+        total_profit_24h: data.total_profit_24h || data.summary?.total_profit || 0,
+        total_executions_24h: data.total_executions_24h || 0,
         success_rate_24h: data.success_rate_24h || 94.2,
-        portfolio_value: data.portfolio_value || data.summary?.totalTVL || 15847.32,
+        portfolio_value: data.portfolio_value || data.summary?.totalTVL || 0,
         portfolio_change_24h: data.portfolio_change_24h || 3.4,
-        top_performing_chains: data.top_performing_chains || [
-          { chain: 'ethereum', profit_24h: 856.23, executions_24h: 12, success_rate: 96.8, avg_gas_cost: 0.012 },
-          { chain: 'arbitrum', profit_24h: 623.45, executions_24h: 8, success_rate: 94.5, avg_gas_cost: 0.002 },
-          { chain: 'polygon', profit_24h: 445.67, executions_24h: 15, success_rate: 92.1, avg_gas_cost: 0.001 },
-          { chain: 'bsc', profit_24h: 367.89, executions_24h: 6, success_rate: 89.3, avg_gas_cost: 0.0005 },
-          { chain: 'optimism', profit_24h: 274.65, executions_24h: 4, success_rate: 97.2, avg_gas_cost: 0.003 }
-        ],
+        top_performing_chains: data.top_performing_chains || [],
         recent_executions: data.recent_executions || [],
-        alerts_count: data.alerts_count || 2
+        alerts_count: data.alerts_count || 0
       };
     } catch (error) {
-      console.warn('Backend oficial no disponible aún, usando datos mock temporales');
+      console.warn('❌ Backend oficial no disponible aún, usando datos mock temporales');
       // Fallback a datos mock mientras se despliega el backend
       return this.getMockDashboardData();
     }
   }
 
   private getMockDashboardData(): DashboardSummary {
+    console.log('🔄 Usando datos MOCK temporales (backend no disponible)');
     // Datos mock temporales mientras se despliega el backend oficial
     return {
       active_opportunities: 127,

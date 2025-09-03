@@ -3,6 +3,7 @@ import { AppSidebar } from "./AppSidebar";
 import { Bell, User, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { BackendStatusIndicator } from "@/components/ui/backend-status-indicator";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -48,10 +49,9 @@ export function Layout({ children }: LayoutProps) {
             </div>
 
             <div className="flex items-center gap-4">
-              {/* Connection Status */}
-              <div className="hidden md:flex items-center gap-2 text-sm">
-                <div className="w-2 h-2 rounded-full bg-profit animate-pulse"></div>
-                <span className="text-muted-foreground">Live Feed</span>
+              {/* Backend Status Indicator */}
+              <div className="hidden md:flex">
+                <BackendStatusIndicator />
               </div>
 
               {/* Theme Toggle */}
