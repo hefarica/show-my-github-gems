@@ -16,7 +16,7 @@ export const useBackendStatus = () => {
     isUsingRealData: false,
     status: 'disconnected',
     lastChecked: new Date(),
-    endpoint: 'https://arbitragex-supreme-backend.pages.dev'
+    endpoint: 'https://8001c524.arbitragex-supreme-backend.pages.dev'
   });
 
   const checkBackendStatus = async () => {
@@ -41,7 +41,7 @@ export const useBackendStatus = () => {
         isUsingRealData: isRealData,
         status: 'connected',
         lastChecked: new Date(),
-        endpoint: 'https://arbitragex-supreme-backend.pages.dev'
+        endpoint: 'https://8001c524.arbitragex-supreme-backend.pages.dev'
       });
 
       console.log(`✅ Backend status: ${isRealData ? 'REAL DATA' : 'MOCK DATA'} (${responseTime}ms)`);
@@ -52,7 +52,7 @@ export const useBackendStatus = () => {
         isUsingRealData: false,
         status: 'disconnected',
         lastChecked: new Date(),
-        endpoint: 'https://arbitragex-supreme-backend.pages.dev'
+        endpoint: 'https://8001c524.arbitragex-supreme-backend.pages.dev'
       });
 
       console.log('❌ Backend disconnected, using mock data');

@@ -39,8 +39,8 @@ export const BackendStatusIndicator = ({ className }: BackendStatusIndicatorProp
         <div className="text-center">
           <div className="font-semibold text-green-400">✅ Backend Conectado</div>
           <div className="text-xs mt-1">
-            Recibiendo datos reales de:<br/>
-            <span className="font-mono text-green-300">arbitragex-supreme-backend.pages.dev</span>
+            Conectado al backend de producción:<br/>
+            <span className="font-mono text-green-300">8001c524.arbitragex-supreme-backend.pages.dev</span>
           </div>
           <div className="text-xs text-muted-foreground mt-1">
             Última verificación: {lastChecked}
@@ -64,8 +64,8 @@ export const BackendStatusIndicator = ({ className }: BackendStatusIndicatorProp
       <div className="text-center">
         <div className="font-semibold text-red-400">❌ Backend No Disponible</div>
         <div className="text-xs mt-1">
-          Backend no responde en:<br/>
-          <span className="font-mono text-red-300">arbitragex-supreme-backend.pages.dev</span>
+          Backend de producción no responde:<br/>
+          <span className="font-mono text-red-300">8001c524.arbitragex-supreme-backend.pages.dev</span>
         </div>
         <div className="text-xs text-yellow-300 mt-1">
           Usando datos mock temporales
