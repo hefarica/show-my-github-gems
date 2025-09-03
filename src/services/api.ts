@@ -22,10 +22,10 @@ class ArbitrageApiService {
   private wsConnection: WebSocket | null = null;
 
   constructor() {
-    // URLs del Backend ArbitrageX Supreme
+    // URLs del Backend ArbitrageX Supreme - Configuración para GitHub
     const baseURL = process.env.NODE_ENV === 'production' 
-      ? 'https://TU-DOMINIO-REAL.com/api/v2'  // ← Cambiar por tu dominio
-      : 'http://localhost:3000/api/v2';  // ← Para desarrollo local
+      ? 'https://api.arbitragexsupreme.com/api/v2'  // Tu dominio en producción
+      : 'https://github.com/hefarica/ARBITRAGEXSUPREME'  // Tu backend actual desde GitHub
 
     this.api = axios.create({
       baseURL,
