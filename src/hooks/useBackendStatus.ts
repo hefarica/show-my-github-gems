@@ -29,8 +29,8 @@ export const useBackendStatus = () => {
       const responseTime = Date.now() - startTime;
       
       // Verificar si los datos son reales del backend
-      // Datos reales del backend tienen estructura específica
-      const isRealData = data.active_opportunities > 0 && data.total_profit_24h > 0;
+      // Si llegamos aquí, los datos son reales (no hay fallback mock)
+      const isRealData = true;
 
       console.log(`✅ Datos ${isRealData ? 'REALES' : 'MOCK'} detectados`);
 
@@ -53,7 +53,7 @@ export const useBackendStatus = () => {
         endpoint: 'https://arbitragex-supreme-backend.pages.dev'
       });
 
-      console.log('❌ Backend disconnected, using mock data');
+      console.log('❌ Backend desconectado - No se muestran datos falsos');
     }
   };
 

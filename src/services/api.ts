@@ -130,9 +130,8 @@ class ArbitrageApiService {
         alerts_count: data.summary?.activeBlockchains || 0
       };
     } catch (error) {
-      console.warn('⚠️ Error conectando al backend de producción, usando fallback mock');
-      // Fallback a datos mock mientras se despliega el backend
-      return this.getMockDashboardData();
+      console.error('❌ Backend desconectado - No se muestran datos mock');
+      throw error; // Propagar error para que UI maneje correctamente
     }
   }
 
@@ -169,10 +168,10 @@ class ArbitrageApiService {
         return opportunities.map((opp: any, index: number) => this.transformOpportunity(opp, index));
       }
       
-      return this.generateMockOpportunities();
+      return [];
     } catch (error) {
-      console.warn('⚠️ Error obteniendo oportunidades del backend de producción, usando fallback mock');
-      return this.generateMockOpportunities();
+      console.error('❌ Backend desconectado - No hay oportunidades disponibles');
+      throw error;
     }
   }
 
@@ -385,10 +384,10 @@ class ArbitrageApiService {
         return networks.map((network: any) => this.transformNetwork(network));
       }
       
-      return this.getMockNetworks();
+      return [];
     } catch (error) {
-      console.warn('⚠️ Error obteniendo redes del backend de producción, usando fallback mock');
-      return this.getMockNetworks();
+      console.error('❌ Backend desconectado - No hay redes disponibles');
+      throw error;
     }
   }
 
