@@ -22,10 +22,10 @@ class ArbitrageApiService {
   private wsConnection: WebSocket | null = null;
 
   constructor() {
-    // Use your backend API URL - update this to match your deployment
+    // CAMBIAR ESTAS URLs POR TU BACKEND REAL
     const baseURL = process.env.NODE_ENV === 'production' 
-      ? 'https://3000-ieud15hdqvkzxftnpjpun-6532622b.e2b.dev/api/v2'
-      : 'http://localhost:3000/api/v2';
+      ? 'https://TU_DOMINIO_PRODUCCION.com/api/v2'  // ← CAMBIAR AQUÍ
+      : 'http://localhost:3000/api/v2';  // ← Tu backend local
 
     this.api = axios.create({
       baseURL,
@@ -176,8 +176,8 @@ class ArbitrageApiService {
   // WebSocket Connection
   connectWebSocket(): void {
     const wsUrl = process.env.NODE_ENV === 'production'
-      ? 'wss://3000-ieud15hdqvkzxftnpjpun-6532622b.e2b.dev/ws'
-      : 'ws://localhost:3000/ws';
+      ? 'wss://TU_DOMINIO_PRODUCCION.com/ws'  // ← CAMBIAR AQUÍ
+      : 'ws://localhost:3000/ws';  // ← Tu WebSocket local
 
     this.wsConnection = new WebSocket(wsUrl);
 
