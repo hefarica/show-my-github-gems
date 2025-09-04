@@ -82,9 +82,15 @@ export function AppSidebar() {
       <SidebarContent className="p-2 rounded-sm">
         {/* Main Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/60 font-medium">
-            Main
-          </SidebarGroupLabel>
+          <div className="mb-3">
+            <div className="bg-primary hover:bg-primary-hover rounded-lg p-3 flex items-center justify-between cursor-pointer transition-colors group">
+              <div className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5 text-primary-foreground" />
+                {open && <span className="text-primary-foreground font-semibold text-sm">MENU PRINCIPAL</span>}
+              </div>
+              {open && <div className="text-primary-foreground/80 group-hover:text-primary-foreground transition-colors">›</div>}
+            </div>
+          </div>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainNavItems.map(item => <SidebarMenuItem key={item.title}>
