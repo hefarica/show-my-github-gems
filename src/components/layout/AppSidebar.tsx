@@ -83,8 +83,8 @@ export function AppSidebar() {
         {/* Main Navigation */}
         <SidebarGroup>
           <div className="mb-3">
-            <div className="relative bg-gradient-to-r from-white/10 via-primary/80 to-white/10 hover:from-white/15 hover:via-primary/90 hover:to-white/15 rounded-lg p-3 flex items-center justify-between cursor-pointer transition-all duration-300 group shadow-lg hover:shadow-xl backdrop-blur-md border border-white/20">
-              <div className="absolute inset-0 bg-gradient-to-r from-white/8 to-white/4 rounded-lg backdrop-blur-lg"></div>
+            <div className="relative bg-gradient-to-r from-white/5 via-primary/60 to-primary hover:from-white/8 hover:via-primary/80 hover:to-primary-hover rounded-lg p-3 flex items-center justify-between cursor-pointer transition-all duration-300 group shadow-lg hover:shadow-xl backdrop-blur-md border border-white/20">
+              <div className="absolute inset-0 bg-gradient-to-r from-white/3 to-white/12 rounded-lg backdrop-blur-lg"></div>
               <div className="relative flex items-center gap-2 z-10">
                 <BarChart3 className="h-5 w-5 text-primary-foreground drop-shadow-sm" />
                 {open && <span className="text-primary-foreground font-semibold text-sm drop-shadow-sm">MENU PRINCIPAL</span>}
