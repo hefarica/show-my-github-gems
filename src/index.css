@@ -8,51 +8,69 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
+    /* Stripe-inspired color palette */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --foreground: 213 27% 15%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --card-foreground: 213 27% 15%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 142 76% 36%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 142 76% 36%;
-
-    --radius: 0.75rem;
-
-    /* Arbitrage specific colors */
-    --profit: 142 76% 36%;
-    --profit-foreground: 210 40% 98%;
-    --loss: 0 84.2% 60.2%;
-    --loss-foreground: 210 40% 98%;
+    --popover-foreground: 213 27% 15%;
+    
+    /* Primary colors - Stripe purple/blue */
+    --primary: 242 47% 26%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 242 47% 22%;
+    
+    /* Secondary colors - subtle grays */
+    --secondary: 215 28% 96%;
+    --secondary-foreground: 213 27% 15%;
+    --secondary-hover: 215 28% 93%;
+    
+    /* Muted colors - light grays */
+    --muted: 215 28% 96%;
+    --muted-foreground: 215 16% 47%;
+    
+    /* Accent colors - Stripe green */
+    --accent: 142 71% 45%;
+    --accent-foreground: 0 0% 100%;
+    --accent-hover: 142 71% 40%;
+    
+    /* Status colors */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
-    --warning-foreground: 210 40% 98%;
+    --warning-foreground: 0 0% 100%;
+    
+    /* Border and input colors */
+    --border: 215 14% 89%;
+    --input: 215 14% 89%;
+    --input-focus: 242 47% 26%;
+    --ring: 242 47% 26%;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    
+    /* Radius */
+    --radius: 0.5rem;
+
+    /* Arbitrage specific colors - using Stripe color palette */
+    --profit: 142 71% 45%;
+    --profit-foreground: 0 0% 100%;
+    --loss: 0 84% 60%;
+    --loss-foreground: 0 0% 100%;
     --info: 199 89% 48%;
-    --info-foreground: 210 40% 98%;
+    --info-foreground: 0 0% 100%;
 
     /* Trading status colors */
     --executing: 38 92% 50%;
     --pending: 199 89% 48%;
-    --completed: 142 76% 36%;
-    --failed: 0 63% 31%;
+    --completed: 142 71% 45%;
+    --failed: 0 84% 60%;
 
     /* Chain colors */
     --ethereum: 221 83% 53%;
@@ -61,59 +79,68 @@ All colors MUST be HSL.
     --arbitrum: 221 83% 53%;
     --optimism: 0 100% 50%;
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar colors - Stripe style */
+    --sidebar-background: 215 28% 98%;
+    --sidebar-foreground: 213 27% 15%;
+    --sidebar-primary: 242 47% 26%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 215 28% 96%;
+    --sidebar-accent-foreground: 213 27% 15%;
+    --sidebar-border: 215 14% 91%;
+    --sidebar-ring: 242 47% 26%;
   }
 
   .dark {
-    --background: 218 28% 6%;
-    --foreground: 218 11% 91%;
-
-    --card: 220 25% 8%;
-    --card-foreground: 218 11% 91%;
-
-    --popover: 220 25% 8%;
-    --popover-foreground: 218 11% 91%;
-
-    --primary: 142 76% 36%;
-    --primary-foreground: 220 25% 8%;
-
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 218 11% 91%;
-
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-
-    --accent: 142 76% 36%;
-    --accent-foreground: 220 25% 8%;
-
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 218 11% 91%;
-
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 142 76% 36%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Dark mode - Stripe dark theme */
+    --background: 213 27% 8%;
+    --foreground: 213 31% 91%;
+    --card: 213 27% 10%;
+    --card-foreground: 213 31% 91%;
+    --popover: 213 27% 10%;
+    --popover-foreground: 213 31% 91%;
+    
+    /* Primary colors - lighter in dark mode */
+    --primary: 213 31% 91%;
+    --primary-foreground: 213 27% 8%;
+    --primary-hover: 213 31% 88%;
+    
+    /* Secondary colors - dark grays */
+    --secondary: 213 27% 15%;
+    --secondary-foreground: 213 31% 91%;
+    --secondary-hover: 213 27% 18%;
+    
+    /* Muted colors - medium grays */
+    --muted: 213 27% 15%;
+    --muted-foreground: 215 16% 65%;
+    
+    /* Accent colors - Stripe green (same) */
+    --accent: 142 71% 45%;
+    --accent-foreground: 0 0% 100%;
+    --accent-hover: 142 71% 40%;
+    
+    /* Status colors */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    
+    /* Border and input colors */
+    --border: 213 27% 20%;
+    --input: 213 27% 20%;
+    --input-focus: 213 31% 91%;
+    --ring: 213 31% 91%;
+    
+    /* Sidebar dark colors */
+    --sidebar-background: 213 27% 10%;
+    --sidebar-foreground: 213 31% 91%;
+    --sidebar-primary: 213 31% 91%;
+    --sidebar-primary-foreground: 213 27% 8%;
+    --sidebar-accent: 213 27% 15%;
+    --sidebar-accent-foreground: 213 31% 91%;
+    --sidebar-border: 213 27% 20%;
+    --sidebar-ring: 213 31% 91%;
   }
 }
 
@@ -124,5 +151,41 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    font-optical-sizing: auto;
+  }
+}
+
+/* Stripe-inspired utilities */
+@layer utilities {
+  .stripe-focus:focus {
+    outline: none;
+    border-color: hsl(var(--input-focus));
+    box-shadow: 0 0 0 3px hsl(var(--input-focus) / 0.1);
+  }
+
+  .stripe-shadow {
+    box-shadow: var(--shadow);
+  }
+
+  .stripe-shadow-sm {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .stripe-shadow-md {
+    box-shadow: var(--shadow-md);
+  }
+
+  .stripe-shadow-lg {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .stripe-transition {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .stripe-gradient {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
   }
 }
