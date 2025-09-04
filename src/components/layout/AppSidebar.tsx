@@ -108,9 +108,16 @@ export function AppSidebar() {
 
         {/* Trading Section */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/60 font-medium">
-            Trading
-          </SidebarGroupLabel>
+          <div className="mb-3">
+            <div className="relative bg-gradient-to-r from-white/5 via-primary/60 to-primary hover:from-white/8 hover:via-primary/80 hover:to-primary-hover rounded-lg p-3 flex items-center justify-between cursor-pointer transition-all duration-300 group shadow-lg hover:shadow-xl backdrop-blur-md border border-white/20">
+              <div className="absolute inset-0 bg-gradient-to-r from-white/3 to-white/12 rounded-lg backdrop-blur-lg"></div>
+              <div className="relative flex items-center gap-2 z-10">
+                <TrendingUp className="h-5 w-5 text-primary-foreground drop-shadow-sm" />
+                {open && <span className="text-primary-foreground font-semibold text-sm drop-shadow-sm">TRADING</span>}
+              </div>
+              {open && <div className="relative text-primary-foreground/80 group-hover:text-primary-foreground transition-colors z-10 drop-shadow-sm">›</div>}
+            </div>
+          </div>
           <SidebarGroupContent>
             <SidebarMenu>
               {tradingItems.map(item => <SidebarMenuItem key={item.title}>
@@ -127,9 +134,16 @@ export function AppSidebar() {
 
         {/* System Section */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/60 font-medium">
-            System
-          </SidebarGroupLabel>
+          <div className="mb-3">
+            <div className="relative bg-gradient-to-r from-white/5 via-primary/60 to-primary hover:from-white/8 hover:via-primary/80 hover:to-primary-hover rounded-lg p-3 flex items-center justify-between cursor-pointer transition-all duration-300 group shadow-lg hover:shadow-xl backdrop-blur-md border border-white/20">
+              <div className="absolute inset-0 bg-gradient-to-r from-white/3 to-white/12 rounded-lg backdrop-blur-lg"></div>
+              <div className="relative flex items-center gap-2 z-10">
+                <Activity className="h-5 w-5 text-primary-foreground drop-shadow-sm" />
+                {open && <span className="text-primary-foreground font-semibold text-sm drop-shadow-sm">SYSTEM</span>}
+              </div>
+              {open && <div className="relative text-primary-foreground/80 group-hover:text-primary-foreground transition-colors z-10 drop-shadow-sm">›</div>}
+            </div>
+          </div>
           <SidebarGroupContent>
             <SidebarMenu>
               {systemItems.map(item => <SidebarMenuItem key={item.title}>
