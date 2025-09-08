@@ -1,7 +1,7 @@
-# LOVABLE-FRONTEND - ArbitrageX Supreme V3.0
+# ArbitrageX Supreme V3.0 - Dashboard Frontend
 
 ## Project Overview
-- **Name**: LOVABLE-FRONTEND
+- **Name**: ArbitrageX Supreme V3.0 Dashboard
 - **Goal**: Dashboard frontend completo para ArbitrageX Supreme V3.0 con gestión de estrategias MEV, monitoreo de blockchains, analíticas y alertas en tiempo real
 - **Features**: 
   - Dashboard principal con métricas en tiempo real
@@ -15,7 +15,7 @@
 ## URLs
 - **Development**: http://localhost:3000
 - **Production**: https://lovable-frontend.pages.dev
-- **GitHub**: https://github.com/username/LOVABLE-FRONTEND
+- **GitHub**: https://github.com/hefarica/show-my-github-gems
 
 ## Architecture
 - **Framework**: Hono + TypeScript + JSX
