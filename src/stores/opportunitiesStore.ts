@@ -1,24 +1,32 @@
 import { create } from 'zustand';
+import { Opportunity } from '../types';
 
-interface Opportunity {
-  id: number;
-  chain: string;
-  tokens: string[];
-  profit: number;
-}
-
-interface OpportunitiesStore {
+interface OpportunitiesState {
   opportunities: Opportunity[];
-  addOpportunity: (opp: Opportunity) => void;
-  removeOpportunity: (id: number) => void;
+  addOpportunity: (opportunity: Opportunity) => void;
+  removeOpportunity: (id: string) => void;
+  updateOpportunity: (id: string, updates: Partial<Opportunity>) => void;
+  clearOpportunities: () => void;
 }
 
-export const useOpportunitiesStore = create<OpportunitiesStore>((set) => ({
+export const useOpportunitiesStore = create<OpportunitiesState>((set) => ({
   opportunities: [],
-  addOpportunity: (opp) => set((state) => ({ 
-    opportunities: [...state.opportunities, opp] 
+  
+  addOpportunity: (opportunity: Opportunity) => set((state) => ({
+    opportunities: [...state.opportunities, opportunity]
   })),
-  removeOpportunity: (id) => set((state) => ({
-    opportunities: state.opportunities.filter(o => o.id !== id)
-  }))
+  
+  removeOpportunity: (id: string) => set((state) => ({
+    opportunities: state.opportunities.filter(opp => opp.id !== id)
+  })),
+  
+  updateOpportunity: (id: string, updates: Partial<Opportunity>) => set((state) => ({
+    opportunities: state.opportunities.map(opp => 
+      opp.id === id ? { ...opp, ...updates } : opp
+    )
+  })),
+  
+  clearOpportunities: () => set({ opportunities: [] })
 }));
+
+export default useOpportunitiesStore;
