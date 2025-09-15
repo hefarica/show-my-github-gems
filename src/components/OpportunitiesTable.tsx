@@ -5,137 +5,192 @@
 // - Auto-refresh cada 10s
 // - Formateo de datos
 
-import React, { useEffect } from 'react';
+import React, { memo, useMemo } from 'react';
+import { FixedSizeList as List } from 'react-window';
 import { useOpportunitiesStore } from '../stores/opportunitiesStore';
-import { fetchOpportunities } from '../services/api';
-import { Opportunity } from '../types';
+import { useUltraFastStreaming } from '../hooks/useUltraFastStreaming';
+import type { Opportunity } from '../types';
 
-export default function OpportunitiesTable() {
-  const { opportunities, addOpportunity, clearOpportunities } = useOpportunitiesStore();
+// Componente de fila memoizado para evitar re-renders innecesarios
+const OpportunityRow = memo(({ index, style, data }: { index: number; style: React.CSSProperties; data: Opportunity[] }) => {
+  const opportunity = data[index];
+  const isEven = index % 2 === 0;
+  
+  return (
+    <div 
+      style={style} 
+      className={`flex items-center px-4 py-2 text-sm border-b border-gray-100 transition-colors hover:bg-blue-50 ${
+        isEven ? 'bg-white' : 'bg-gray-50'
+      }`}
+    >
+      {/* ID */}
+      <div className="w-20 flex-shrink-0 font-mono text-xs text-gray-600">
+        #{opportunity.id}
+      </div>
+      
+      {/* Chain */}
+      <div className="w-24 flex-shrink-0">
+        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+          opportunity.chain === 'Ethereum' ? 'bg-blue-100 text-blue-800' :
+          opportunity.chain === 'Polygon' ? 'bg-purple-100 text-purple-800' :
+          opportunity.chain === 'Arbitrum' ? 'bg-orange-100 text-orange-800' :
+          opportunity.chain === 'BSC' ? 'bg-yellow-100 text-yellow-800' :
+          'bg-gray-100 text-gray-800'
+        }`}>
+          {opportunity.chain}
+        </span>
+      </div>
+      
+      {/* Tokens */}
+      <div className="w-32 flex-shrink-0 font-medium text-gray-900">
+        {opportunity.tokenA} → {opportunity.tokenB}
+      </div>
+      
+      {/* Profit */}
+      <div className="w-24 flex-shrink-0 text-right">
+        <span className={`font-bold ${
+          opportunity.profit > 200 ? 'text-green-600' :
+          opportunity.profit > 100 ? 'text-green-500' :
+          opportunity.profit > 50 ? 'text-blue-600' :
+          'text-gray-700'
+        }`}>
+          ${opportunity.profit.toFixed(2)}
+        </span>
+      </div>
+      
+      {/* Gas */}
+      <div className="w-20 flex-shrink-0 text-right text-gray-500">
+        {opportunity.gasEstimate}g
+      </div>
+      
+      {/* Status */}
+      <div className="w-24 flex-shrink-0">
+        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+          opportunity.status === 'completed' ? 'bg-green-100 text-green-800' :
+          opportunity.status === 'executing' ? 'bg-yellow-100 text-yellow-800 animate-pulse' :
+          opportunity.status === 'pending' ? 'bg-blue-100 text-blue-800' :
+          'bg-red-100 text-red-800'
+        }`}>
+          {opportunity.status}
+        </span>
+      </div>
+      
+      {/* Timestamp */}
+      <div className="w-20 flex-shrink-0 text-xs text-gray-400 text-right">
+        {new Date(opportunity.timestamp).toLocaleTimeString().slice(0, 8)}
+      </div>
+      
+      {/* Latency indicator (si está disponible) */}
+      {opportunity.receivedAt && (
+        <div className="w-16 flex-shrink-0 text-xs text-gray-400 text-right">
+          {Math.round(Date.now() - opportunity.receivedAt)}ms
+        </div>
+      )}
+    </div>
+  );
+});
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchOpportunities();
-        clearOpportunities(); // Clear existing before adding new
-        data.forEach((opp: Opportunity) => addOpportunity(opp));
-      } catch (error) {
-        console.error('Error fetching opportunities:', error);
-        // Add mock data for demonstration
-        const mockOpportunities: Opportunity[] = [
-          {
-            id: '1',
-            chain: 'Ethereum',
-            tokenA: 'USDC',
-            tokenB: 'USDT',
-            profit: 125.50,
-            gasEstimate: 45,
-            timestamp: Date.now(),
-            status: 'pending'
-          },
-          {
-            id: '2',
-            chain: 'Polygon',
-            tokenA: 'WETH',
-            tokenB: 'MATIC',
-            profit: 89.25,
-            gasEstimate: 12,
-            timestamp: Date.now() - 30000,
-            status: 'executing'
-          },
-          {
-            id: '3',
-            chain: 'Arbitrum',
-            tokenA: 'DAI',
-            tokenB: 'USDC',
-            profit: 67.80,
-            gasEstimate: 8,
-            timestamp: Date.now() - 60000,
-            status: 'completed'
-          }
-        ];
-        clearOpportunities();
-        mockOpportunities.forEach(addOpportunity);
-      }
-    };
+OpportunityRow.displayName = 'OpportunityRow';
 
-    const interval = setInterval(fetchData, 10000);
-    fetchData(); // Initial fetch
-    return () => clearInterval(interval);
-  }, [addOpportunity, clearOpportunities]);
+export const OpportunitiesTable: React.FC = () => {
+  const { opportunities } = useOpportunitiesStore();
+  const { isConnected, latency, messagesPerSecond } = useUltraFastStreaming();
+  
+  // Ordenar oportunidades por timestamp (más recientes primero) de forma memoizada
+  const sortedOpportunities = useMemo(() => {
+    return [...opportunities].sort((a, b) => b.timestamp - a.timestamp);
+  }, [opportunities]);
+
+  if (!isConnected) {
+    return (
+      <div className="p-8 text-center">
+        <div className="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+        <p className="text-gray-600 font-medium">Conectando al streaming ultra-rápido...</p>
+        <p className="text-sm text-gray-500 mt-2">Edge Workers • WebSocket • Datos reales</p>
+      </div>
+    );
+  }
+
+  if (sortedOpportunities.length === 0) {
+    return (
+      <div className="p-8 text-center">
+        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <span className="text-2xl">⚡</span>
+        </div>
+        <p className="text-gray-600 font-medium">Streaming activo - Esperando oportunidades</p>
+        <p className="text-sm text-gray-500 mt-2">
+          Conectado • Latencia: {latency}ms • {messagesPerSecond} msg/s
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h3 className="text-lg font-medium text-gray-900">Live Opportunities</h3>
-        <p className="text-sm text-gray-500">Real-time arbitrage opportunities</p>
+    <div className="h-full flex flex-col">
+      {/* Header con métricas en tiempo real */}
+      <div className="bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-3 border-b border-gray-200">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-4">
+            <h3 className="text-lg font-semibold text-gray-900">Streaming Ultra-Rápido</h3>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-sm text-green-600 font-medium">LIVE</span>
+            </div>
+          </div>
+          <div className="flex items-center space-x-6 text-sm">
+            <div className="text-gray-600">
+              <span className="font-medium">{sortedOpportunities.length}</span> oportunidades
+            </div>
+            <div className="text-gray-600">
+              <span className="font-medium">{latency}ms</span> latencia
+            </div>
+            <div className="text-gray-600">
+              <span className="font-medium">{messagesPerSecond}</span> msg/s
+            </div>
+          </div>
+        </div>
       </div>
-      
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chain</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tokens</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profit</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gas</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {opportunities.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
-                  No opportunities found
-                </td>
-              </tr>
-            ) : (
-              opportunities.map((opp: Opportunity) => (
-                <tr key={opp.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {opp.chain}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {opp.tokenA} → {opp.tokenB}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">
-                    ${opp.profit.toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {opp.gasEstimate} gwei
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      opp.status === 'completed' ? 'bg-green-100 text-green-800' :
-                      opp.status === 'executing' ? 'bg-yellow-100 text-yellow-800' :
-                      opp.status === 'failed' ? 'bg-red-100 text-red-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                      {opp.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(opp.timestamp).toLocaleTimeString()}
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+
+      {/* Header de columnas */}
+      <div className="bg-gray-100 px-4 py-2 text-xs font-medium text-gray-700 uppercase tracking-wider border-b">
+        <div className="flex items-center">
+          <div className="w-20 flex-shrink-0">ID</div>
+          <div className="w-24 flex-shrink-0">Chain</div>
+          <div className="w-32 flex-shrink-0">Tokens</div>
+          <div className="w-24 flex-shrink-0 text-right">Profit</div>
+          <div className="w-20 flex-shrink-0 text-right">Gas</div>
+          <div className="w-24 flex-shrink-0">Status</div>
+          <div className="w-20 flex-shrink-0 text-right">Time</div>
+          <div className="w-16 flex-shrink-0 text-right">Lag</div>
+        </div>
       </div>
-      
-      <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-700">
-            Showing {opportunities.length} opportunities
-          </p>
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-xs text-gray-500">Live updates</span>
+
+      {/* Virtual scrolling list - Sin parpadeo, ultra-rápido */}
+      <div className="flex-1">
+        <List
+          height={500} // Altura fija para virtual scrolling
+          itemCount={sortedOpportunities.length}
+          itemSize={48} // Altura de cada fila
+          itemData={sortedOpportunities}
+          overscanCount={5} // Pre-renderizar 5 elementos extra para scroll suave
+        >
+          {OpportunityRow}
+        </List>
+      </div>
+
+      {/* Footer con estadísticas */}
+      <div className="bg-gray-50 px-4 py-2 border-t border-gray-200">
+        <div className="flex items-center justify-between text-xs text-gray-500">
+          <div>
+            Última actualización: {new Date().toLocaleTimeString()}
+          </div>
+          <div className="flex items-center space-x-4">
+            <span>Virtual Scrolling: ON</span>
+            <span>Auto-refresh: STREAMING</span>
+            <span>Mock Data: DISABLED</span>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};

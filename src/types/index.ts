@@ -14,6 +14,7 @@ export interface Opportunity {
   gasEstimate: number;
   timestamp: number;
   status: 'pending' | 'executing' | 'completed' | 'failed';
+  receivedAt?: number; // Para medición de latencia en streaming
 }
 
 export interface Execution {
@@ -36,8 +37,9 @@ export interface MarketData {
 }
 
 export interface WebSocketMessage {
-  type: 'opportunity:new' | 'opportunity:update' | 'execution:update' | 'market:update';
-  data: Opportunity | Execution | MarketData;
+  type: 'opportunity:new' | 'opportunity:update' | 'execution:update' | 'market:update' | 'ping' | 'pong' | 'market_update' | 'opportunity_new' | 'opportunity_update';
+  data?: Opportunity | Execution | MarketData;
+  timestamp?: number; // Para ping/pong y medición de latencia
 }
 
 export interface ApiResponse<T> {
@@ -45,4 +47,23 @@ export interface ApiResponse<T> {
   data?: T;
   error?: string;
   timestamp: number;
+}
+
+export interface SystemHealth {
+  backend: {
+    status: 'connected' | 'disconnected' | 'error';
+    latency: number;
+    lastCheck: number;
+  };
+  edge: {
+    status: 'connected' | 'disconnected' | 'error';
+    latency: number;
+    lastCheck: number;
+  };
+  websocket: {
+    status: 'connected' | 'disconnected' | 'error';
+    latency: number;
+    lastCheck: number;
+  };
+  overall: 'healthy' | 'degraded' | 'unhealthy';
 }

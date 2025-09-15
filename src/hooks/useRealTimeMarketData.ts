@@ -1,78 +1,39 @@
 // src/hooks/useRealTimeMarketData.ts
-// Hook para datos de mercado en tiempo real
-// Debe incluir:
-// - Conexión WebSocket a Edge Computing
-// - Estado de datos de mercado
-// - Manejo de reconexión
+// Hook para streaming ultra-rápido en tiempo real (ms-level, sin parpadeo)
+// Arquitectura: Mempool → searcher-rs → Edge Workers → Frontend
+// Latencia objetivo: < 100ms end-to-end
 
-import { useState, useEffect } from 'react';
-import { MarketData, WebSocketMessage } from '../types';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import type { MarketData, WebSocketMessage, Opportunity } from '../types';
+import { useOpportunitiesStore } from '../stores/opportunitiesStore';
 
-export function useRealTimeMarketData() {
-  const [data, setData] = useState<MarketData | null>(null);
-  const [connected, setConnected] = useState(false);
+export const useRealTimeMarketData = () => {
+  const [isConnected, setIsConnected] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState<number>(0);
+  const [marketData, setMarketData] = useState<MarketData | null>(null);
+  const [connectionAttempts, setConnectionAttempts] = useState(0);
+  const [latency, setLatency] = useState<number>(0);
+  
+  const wsRef = useRef<WebSocket | null>(null);
+  const reconnectTimeoutRef = useRef<number | null>(null);
+  const pingIntervalRef = useRef<number | null>(null);
+  const lastPingRef = useRef<number>(0);
+  
+  const { addOpportunity, updateOpportunity } = useOpportunitiesStore();
 
-  useEffect(() => {
-    const connectWebSocket = () => {
-      const ws = new WebSocket('wss://arbitragex.workers.dev/ws');
-      
-      ws.onopen = () => {
-        setConnected(true);
-        console.log('WebSocket connected to Edge Computing');
-      };
-      
-      ws.onmessage = (event) => {
-        try {
-          const message: WebSocketMessage = JSON.parse(event.data);
-          
-          if (message.type === 'market:update') {
-            setData(message.data as MarketData);
-          } else if (message.type === 'opportunity:new') {
-            // Simular actualización de datos de mercado
-            setData(prev => prev ? {
-              ...prev,
-              totalOpportunities: prev.totalOpportunities + 1,
-              lastUpdate: Date.now()
-            } : {
-              profit: Math.random() * 1000,
-              successRate: 85 + Math.random() * 10,
-              latency: 50 + Math.random() * 100,
-              totalOpportunities: 1,
-              totalExecutions: 0,
-              lastUpdate: Date.now()
-            });
-          }
-        } catch (error) {
-          console.error('Error parsing WebSocket message:', error);
-        }
-      };
-      
-      ws.onclose = () => {
-        setConnected(false);
-        console.log('WebSocket disconnected, attempting reconnect...');
-        setTimeout(connectWebSocket, 5000);
-      };
-      
-      ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
-        setConnected(false);
-      };
-      
-      return ws;
-    };
-
-    const ws = connectWebSocket();
-    
-    // Datos iniciales simulados
-    setData({
-      profit: 1234.56,
-      successRate: 87.3,
-      latency: 125,
-      totalOpportunities: 42,
-      totalExecutions: 38,
-      lastUpdate: Date.now()
-    });
-
+  const cleanup = useCallback(() => {
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
+    }
+    if (pingIntervalRef.current) {
+      clearInterval(pingIntervalRef.current);
+      pingIntervalRef.current = null;
+    }
+    if (wsRef.current) {
+      wsRef.current.close();
+      wsRef.current = null;
+    }
     return () => {
       ws.close();
     };
