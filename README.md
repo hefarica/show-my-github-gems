@@ -1,8 +1,8 @@
-# ArbitrageX Supreme V3.0 - Dashboard Frontend
+# ArbitrageX Supreme V3.2 - Dashboard Frontend
 
 ## Project Overview
-- **Name**: ArbitrageX Supreme V3.0 Dashboard
-- **Goal**: Dashboard frontend completo para ArbitrageX Supreme V3.0 con gestión de estrategias MEV, monitoreo de blockchains, analíticas y alertas en tiempo real
+- **Name**: ArbitrageX Supreme V3.2 Dashboard
+- **Goal**: Dashboard frontend completo para ArbitrageX Supreme V3.2 con gestión de estrategias MEV, monitoreo de blockchains, analíticas y alertas en tiempo real
 - **Features**: 
   - Dashboard principal con métricas en tiempo real
   - Gestión completa de 13 estrategias MEV (6 base + 7 avanzadas)
