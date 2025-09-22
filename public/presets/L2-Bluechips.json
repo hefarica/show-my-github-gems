@@ -1,0 +1,111 @@
+{
+  "enabled": true,
+  "version": "3.5.0",
+  "dry_run": false,
+  "strategies": {
+    "enabled": {
+      "dex_dex": true,
+      "triangular_inter_dex": true,
+      "triangular_intra_dex": true,
+      "stable_arb": false
+    },
+    "priority": ["dex_dex", "triangular_inter_dex", "triangular_intra_dex"],
+    "roi_min_bps": 4,
+    "ev_min_usd": 30,
+    "max_hops": {
+      "dex_dex": 2,
+      "triangular_inter_dex": 3,
+      "triangular_intra_dex": 3,
+      "stable_arb": 2
+    }
+  },
+  "funding": {
+    "mode": "flash_loan_only",
+    "lenders": {
+      "base": [
+        { "name": "aave_v3", "protocol": "aave_v3", "contract": "0x...", "priority": 1 },
+        { "name": "uniswap_v3_flash", "protocol": "uniswap_v3", "contract": "0x...", "priority": 2 }
+      ],
+      "arbitrum": [
+        { "name": "aave_v3", "protocol": "aave_v3", "contract": "0x...", "priority": 1 },
+        { "name": "balancer_vault", "protocol": "balancer_vault", "contract": "0x...", "priority": 2 }
+      ]
+    },
+    "assets": {
+      "base": ["USDC", "WETH", "DAI"],
+      "arbitrum": ["USDC.e", "WETH"]
+    },
+    "amount_bands": {
+      "USDC": [{ "min_usd": 50000, "max_usd": 500000, "step_usd": 50000 }],
+      "WETH": [{ "min_usd": 30000, "max_usd": 150000, "step_usd": 30000 }]
+    },
+    "fee_bps_ceiling": 9,
+    "atomic_repay_required": true,
+    "fallback_on_insufficient_liquidity": true,
+    "retries": { "max_attempts": 2, "backoff_ms": 150 }
+  },
+  "risk": {
+    "risk_max": 25,
+    "tax_max_bps": 50,
+    "honeypot_check": true,
+    "deny_fee_on_transfer": true,
+    "allowlist": { "tokens": [], "pairs": [], "dexes": [] },
+    "denylist": { "tokens": [], "pairs": [], "dexes": [] }
+  },
+  "liquidity": {
+    "size_usd_candidates": [50000, 100000, 250000],
+    "max_slippage_bps": 10,
+    "min_depth_usd": 1000000,
+    "twap_window_sec": 300
+  },
+  "discovery": {
+    "top_pairs_per_chain": 50,
+    "scan_interval_ms": 120000
+  },
+  "execution": {
+    "route_mode": "private",
+    "private_relays": ["flashbots_protect"],
+    "prob_exec_priv_min": 0.7,
+    "gas": { "policy": "percentile", "percentile": 75, "max_fee_cap_gwei": 0 },
+    "size_dynamic": true,
+    "kill_switch": true,
+    "path_templates": {
+      "dex_dex": "LENDER->DEX_A->DEX_B->LENDER",
+      "triangular_inter_dex": "LENDER->DEX_A(p0/p1)->DEX_B(p1/p2)->DEX_A(p2/p0)->LENDER",
+      "triangular_intra_dex": "LENDER->DEX_X(p0/p1)->DEX_X(p1/p2)->DEX_X(p2/p0)->LENDER",
+      "stable_arb": "LENDER->STABLE_VENUE_A->STABLE_VENUE_B->LENDER"
+    }
+  },
+  "providers": {
+    "base": {
+      "ws": [{ "url": "wss://base.publicnode.com", "weight": 2 }],
+      "http": [{ "url": "https://base.publicnode.com", "max_rps": 10 }]
+    },
+    "arbitrum": {
+      "ws": [{ "url": "wss://arbitrum.publicnode.com", "weight": 2 }],
+      "http": [{ "url": "https://arbitrum.publicnode.com", "max_rps": 10 }]
+    }
+  },
+  "chains": {
+    "base": { "enabled": true },
+    "arbitrum": { "enabled": true }
+  },
+  "alerts": {
+    "webhook_url": "",
+    "thresholds": {
+      "ev_min_notify": 100,
+      "detect_to_publish_p95_ms": 1500,
+      "private_inclusion_success_min": 0.8
+    }
+  },
+  "assets_policy": {
+    "min_age_days": 180,
+    "require_oracle": true,
+    "min_liquidity_usd": 2000000,
+    "min_daily_volume_usd": 1000000,
+    "deny_fee_on_transfer": true,
+    "deny_blacklist": true,
+    "preferred_stablecoins": ["USDC", "DAI"],
+    "preferred_bluechips": ["WETH", "WBTC", "LINK", "UNI"]
+  }
+}
